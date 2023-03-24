@@ -145,9 +145,9 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 				return err
 			}
 
-      if len(nicknameMapping) == 0 {
-        continue
-      }
+			if len(nicknameMapping) == 0 {
+				continue
+			}
 
 			// create section for AccountNickname-PermissionSet profile
 			section2 := payload.Section(fmt.Sprintf("profile %s-%s", nicknameFor(*account.Id, nicknameMapping), *resp.PermissionSet.Name))
@@ -180,12 +180,13 @@ func nicknameFor(accountId string, nicknameMapping map[string]string) string {
 var rootCmd = &cobra.Command{
 	Use:   "aws-config-creator",
 	Short: "Creates an AWS config file from AWS SSO configuration",
+	Long:  "Parses an AWS organizations permission set structure to build a complete .aws/config file with all permission sets provisioned across all AWS member accounts",
 	RunE:  handleRoot,
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&ssoSession, "sso-session", "", "SSO Session")
-	rootCmd.PersistentFlags().StringVar(&profile, "profile", "", "Profile")
-	rootCmd.PersistentFlags().StringVar(&ssoRegion, "sso-region", "", "SSO Region")
-	rootCmd.PersistentFlags().StringVar(&mapping, "mapping", "m", "Comma-delimited Account Nickname Mapping (id=nickname)")
+	rootCmd.PersistentFlags().StringVarP(&ssoSession, "sso-session", "s", "", "Nickname to give the SSO Session (e.g. org name)")
+	rootCmd.PersistentFlags().StringVarP(&profile, "profile", "p", "", "Profile")
+	rootCmd.PersistentFlags().StringVarP(&ssoRegion, "sso-region", "r", "", "AWS region where AWS SSO resides")
+	rootCmd.PersistentFlags().StringVarP(&mapping, "mapping", "m", "", "Comma-delimited Account Nickname Mapping (id=nickname)")
 }
