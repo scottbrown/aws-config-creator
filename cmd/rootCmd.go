@@ -45,13 +45,7 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 	if err := cmd.MarkFlagRequired("sso-session"); err != nil {
 		return err
 	}
-	if err := cmd.MarkFlagRequired("profile"); err != nil {
-		return err
-	}
 	if err := cmd.MarkFlagRequired("sso-region"); err != nil {
-		return err
-	}
-	if err := cmd.MarkFlagRequired("mapping"); err != nil {
 		return err
 	}
 
@@ -150,6 +144,10 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 			if _, err := section1.NewKey("sso_role_name", *resp.PermissionSet.Name); err != nil {
 				return err
 			}
+
+      if len(nicknameMapping) == 0 {
+        continue
+      }
 
 			// create section for AccountNickname-PermissionSet profile
 			section2 := payload.Section(fmt.Sprintf("profile %s-%s", nicknameFor(*account.Id, nicknameMapping), *resp.PermissionSet.Name))
