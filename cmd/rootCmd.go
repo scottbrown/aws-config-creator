@@ -22,7 +22,22 @@ var (
 	mapping    string
 )
 
-var nicknameMapping map[string]string
+func parseNicknameMapping(mapping string) map[string]string {
+	nicknameMapping := make(map[string]string)
+
+	if len(mapping) == 0 {
+		return nicknameMapping
+	}
+
+	tokens := strings.Split(mapping, ",")
+	for _, token := range tokens {
+		parts := strings.Split(token, "=")
+
+		nicknameMapping[parts[0]] = parts[1]
+	}
+
+	return nicknameMapping
+}
 
 func handleRoot(cmd *cobra.Command, args []string) error {
 	ctx := context.TODO()
@@ -60,16 +75,7 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	tokens := strings.Split(mapping, ",")
-	for _, token := range tokens {
-		parts := strings.Split(token, "=")
-
-		nicknameMapping[parts[0]] = parts[1]
-	}
-
-	//creator := configcreator.NewConfigCreator(ctx, cfg)
-
-	//err := creator.Create()
+	nicknameMapping := parseNicknameMapping(mapping)
 
 	// get the SSO instance ARN (there's only one allowed)
 	ssoClient := ssoadmin.NewFromConfig(cfg)
