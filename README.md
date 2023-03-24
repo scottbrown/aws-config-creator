@@ -18,13 +18,33 @@ This tool requires some readonly permissions from your AWS organization account.
 
 ## Usage
 
+Add `-v` or `--verbose` to see more output about which operations are
+happening.
+
+### Create a basic `.aws/config` file
+
 ```bash
-$ aws-config-creator --sso-session td --sso-region us-east-1 --profile admin
+$ aws-config-creator --sso-session acme \
+                     --sso-region us-east-1 \
+                     --profile admin
 Writing 43 entries to aws.config...done.
 ```
 
-Add `-v` or `--verbose` to see more output about which operations are
-happening.
+The resulting file will contain a set of profiles in the format: `[profile AWS_ACCOUNT_ID:PERMISSION_SET_NAME]`
+
+For example: `[profile 0123456789012-AdministratorAccess]`
+
+### Create a friendly `.aws/config` file
+
+```bash
+$ aws-config-creator --sso-session acme \
+                     --sso-region us-east-1 \
+                     --profile admin \
+                     --mapping "0123456789012=acme,98765432101=acmelite"
+Writing 86 entries to aws.config...done.
+```
+
+By supplying a `--mapping` flag with a comma-delimited list of key=value pairs corresponding to AWS Account ID and its nickname, the tool will create the basic `.aws/config` profiles and then create a separate set of profiles that follow the format `[profile NICKNAME-PERMISSIONSETNAME]`.  For example: `[profile acme-AdministratorAccess]`.  This removes the need for your users to remember the 12-digit AWS Account ID, but also allows for backward-compatibility for those people that like using the AWS Account ID in the profile name.
 
 ## Contributing
 
@@ -34,6 +54,10 @@ happening.
 1. `make test`
 1. `make build`
 1. Make a Pull Request.
+
+## Roadmap
+
+- Create a Lambda function artifact that can be run on a schedule, outputting the latest `.aws/config` to an S3 bucket so that it is always available, especially to those users without the permissions to run this tool.
 
 ## License
 
