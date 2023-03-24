@@ -15,11 +15,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const DEFAULT_FILENAME string = "aws.config"
+
 var (
 	ssoSession string
 	profile    string
 	ssoRegion  string
 	mapping    string
+  filename   string
 )
 
 func parseNicknameMapping(mapping string) map[string]string {
@@ -164,6 +167,11 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+  if err := payload.SaveTo(filename); err != nil {
+    return err
+  }
+  fmt.Printf("Wrote to %s\n", filename)
+
 	return nil
 }
 
@@ -189,4 +197,5 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&profile, "profile", "p", "", "Profile")
 	rootCmd.PersistentFlags().StringVarP(&ssoRegion, "sso-region", "r", "", "AWS region where AWS SSO resides")
 	rootCmd.PersistentFlags().StringVarP(&mapping, "mapping", "m", "", "Comma-delimited Account Nickname Mapping (id=nickname)")
+  rootCmd.PersistentFlags().StringVarP(&filename, "output", "o", DEFAULT_FILENAME, "Where the AWS config file will be written")
 }
