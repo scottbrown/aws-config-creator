@@ -1,0 +1,33 @@
+---
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.20.1'
+      - name: Compile all versions
+        run: make release VERSION=${GITHUB_REF_NAME}
+      - name: Generate SBOM
+        uses: CycloneDX/gh-gomod-generate-sbom@v1
+        with:
+          version: v1
+          args: mod -licenses -json -output bom.json
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            bom.json
+            .dist/*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
