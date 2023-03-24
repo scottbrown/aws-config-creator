@@ -7,6 +7,15 @@ permission sets (like IAM roles) that can be assumed by people.  This tool
 looks through all permission sets and account assignments and generates
 an `.aws/config` file containing these roles that can be assumed.
 
+## Permissions Required
+
+This tool requires some readonly permissions from your AWS organization account.  They are:
+
+1. `organizations:ListAccounts`
+1. `sso:ListInstances`
+1. `sso:ListPermissionSetsProvisionedToAccount`
+1. `sso:DescribePermissionSet`
+
 ## Usage
 
 ```bash
