@@ -22,7 +22,8 @@ var (
 	profile    string
 	ssoRegion  string
 	mapping    string
-  filename   string
+	filename   string
+	stdout     bool
 )
 
 func parseNicknameMapping(mapping string) map[string]string {
@@ -167,10 +168,16 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-  if err := payload.SaveTo(filename); err != nil {
-    return err
-  }
-  fmt.Printf("Wrote to %s\n", filename)
+	if stdout {
+		if _, err := payload.WriteTo(os.Stdout); err != nil {
+			return err
+		}
+	} else {
+		if err := payload.SaveTo(filename); err != nil {
+			return err
+		}
+		fmt.Printf("Wrote to %s\n", filename)
+	}
 
 	return nil
 }
@@ -197,5 +204,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&profile, "profile", "p", "", "Profile")
 	rootCmd.PersistentFlags().StringVarP(&ssoRegion, "sso-region", "r", "", "AWS region where AWS SSO resides")
 	rootCmd.PersistentFlags().StringVarP(&mapping, "mapping", "m", "", "Comma-delimited Account Nickname Mapping (id=nickname)")
-  rootCmd.PersistentFlags().StringVarP(&filename, "output", "o", DEFAULT_FILENAME, "Where the AWS config file will be written")
+	rootCmd.PersistentFlags().StringVarP(&filename, "output", "o", DEFAULT_FILENAME, "Where the AWS config file will be written")
+	rootCmd.PersistentFlags().BoolVar(&stdout, "stdout", false, "Specify this flag to write the config file to stdout instead of a file")
 }
