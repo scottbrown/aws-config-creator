@@ -82,3 +82,35 @@ func TestNicknameFor(t *testing.T) {
 		})
 	}
 }
+
+func TestSsoStartUrl(t *testing.T) {
+	tt := []struct {
+		name            string
+		identityStoreID string
+		ssoFriendlyName string
+		expected        string
+	}{
+		{
+			"has friendly name",
+			"d-012345",
+			"foo",
+			"https://foo.awsapps.com/start",
+		},
+		{
+			"missing friendly name",
+			"d-012345",
+			"",
+			"https://d-012345.awsapps.com/start",
+		},
+	}
+
+	for _, tc := range tt {
+		t.Run(tc.name, func(t *testing.T) {
+			actual := ssoStartUrl(tc.identityStoreID, tc.ssoFriendlyName)
+
+			if actual != tc.expected {
+				t.Errorf("unexpected output: got %v, want %v", actual, tc.expected)
+			}
+		})
+	}
+}

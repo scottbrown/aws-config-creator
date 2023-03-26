@@ -18,12 +18,13 @@ import (
 const DEFAULT_FILENAME string = "aws.config"
 
 var (
-	ssoSession string
-	profile    string
-	ssoRegion  string
-	mapping    string
-	filename   string
-	stdout     bool
+	ssoSession      string
+	profile         string
+	ssoRegion       string
+	mapping         string
+	filename        string
+	stdout          bool
+	ssoFriendlyName string
 )
 
 func parseNicknameMapping(mapping string) map[string]string {
@@ -102,7 +103,8 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 	payload := ini.Empty()
 
 	ssoSection := payload.Section(fmt.Sprintf("sso-session %s", ssoSession))
-	if _, err := ssoSection.NewKey("sso_start_url", fmt.Sprintf("https://%s.awsapps.com/start", *resp.Instances[0].IdentityStoreId)); err != nil {
+
+	if _, err := ssoSection.NewKey("sso_start_url", ssoStartUrl(*resp.Instances[0].IdentityStoreId, ssoFriendlyName)); err != nil {
 		return err
 	}
 	if _, err := ssoSection.NewKey("sso_region", ssoRegion); err != nil {
@@ -192,6 +194,16 @@ func nicknameFor(accountId string, nicknameMapping map[string]string) string {
 	return v
 }
 
+func ssoStartUrl(identityStoreID, friendlyName string) string {
+	subdomain := identityStoreID
+
+	if friendlyName != "" {
+		subdomain = friendlyName
+	}
+
+	return fmt.Sprintf("https://%s.awsapps.com/start", subdomain)
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "aws-config-creator",
 	Short: "Creates an AWS config file from AWS SSO configuration",
@@ -206,4 +218,5 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&mapping, "mapping", "m", "", "Comma-delimited Account Nickname Mapping (id=nickname)")
 	rootCmd.PersistentFlags().StringVarP(&filename, "output", "o", DEFAULT_FILENAME, "Where the AWS config file will be written")
 	rootCmd.PersistentFlags().BoolVar(&stdout, "stdout", false, "Specify this flag to write the config file to stdout instead of a file")
+	rootCmd.PersistentFlags().StringVar(&ssoFriendlyName, "sso-friendly-name", "", "Use this instead of the identity store ID for the start URL")
 }
