@@ -110,6 +110,8 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 		if orgOutput.NextToken == nil {
 			break
 		}
+
+		token = orgOutput.NextToken
 	}
 
 	// print out the SSO session configuration to file
