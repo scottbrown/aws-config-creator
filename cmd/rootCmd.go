@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/organizations"
+	"github.com/aws/aws-sdk-go-v2/service/organizations/types"
 	"github.com/aws/aws-sdk-go-v2/service/ssoadmin"
 	"github.com/go-ini/ini"
 	"github.com/spf13/cobra"
@@ -91,12 +92,24 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 	instanceArn := resp.Instances[0].InstanceArn
 
 	// list all accounts
+	var accounts []types.Account
 	orgClient := organizations.NewFromConfig(cfg)
 
-	orgOutput, err := orgClient.ListAccounts(ctx, &organizations.ListAccountsInput{})
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	var token *string
+	for {
+		orgOutput, err := orgClient.ListAccounts(ctx, &organizations.ListAccountsInput{NextToken: token})
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
+			os.Exit(1)
+		}
+
+		for _, v := range orgOutput.Accounts {
+			accounts = append(accounts, v)
+		}
+
+		if orgOutput.NextToken == nil {
+			break
+		}
 	}
 
 	// print out the SSO session configuration to file
@@ -115,7 +128,7 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 	}
 
 	// loop through each account
-	for _, account := range orgOutput.Accounts {
+	for _, account := range accounts {
 		// list-permission-sets-provisioned-to-account
 		params := &ssoadmin.ListPermissionSetsProvisionedToAccountInput{
 			InstanceArn: instanceArn,
