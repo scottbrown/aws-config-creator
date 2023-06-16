@@ -19,7 +19,7 @@ jobs:
       - name: Compile all versions
         run: make release VERSION=${GITHUB_REF_NAME}
       - name: Generate SBOM
-        uses: CycloneDX/gh-gomod-generate-sbom@v1
+        uses: CycloneDX/gh-gomod-generate-sbom@v2
         with:
           version: v1
           args: mod -licenses -json -output bom.json
