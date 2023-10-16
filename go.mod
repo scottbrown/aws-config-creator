@@ -3,7 +3,7 @@ module github.com/scottbrown/aws-config-creator
 go 1.19
 
 require (
-	github.com/aws/aws-sdk-go-v2 v1.21.1
+	github.com/aws/aws-sdk-go-v2 v1.21.2
 	github.com/aws/aws-sdk-go-v2/config v1.18.43
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.20.7
 	github.com/aws/aws-sdk-go-v2/service/ssoadmin v1.18.2
