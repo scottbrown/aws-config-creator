@@ -1,4 +1,3 @@
-github.com/aws/aws-sdk-go-v2 v1.21.2/go.mod h1:ErQhvNuEMhJjweavOYhxVkn2RUx7kQXVATHrjKtxIpM=
 github.com/aws/aws-sdk-go-v2 v1.22.2 h1:lV0U8fnhAnPz8YcdmZVV60+tr6CakHzqA6P8T46ExJI=
 github.com/aws/aws-sdk-go-v2 v1.22.2/go.mod h1:Kd0OJtkW3Q0M0lUWGszapWjEvrXDzRW+D21JNsroB+c=
 github.com/aws/aws-sdk-go-v2/config v1.22.3 h1:JewoyAW8yPRpWus3gy/rIGhorHN4zInB8wgJfavaxwM=
@@ -7,10 +6,8 @@ github.com/aws/aws-sdk-go-v2/credentials v1.15.2 h1:rKH7khRMxPdD0u3dHecd0Q7NOVw3
 github.com/aws/aws-sdk-go-v2/credentials v1.15.2/go.mod h1:tXM8wmaeAhfC7nZoCxb0FzM/aRaB1m1WQ7x0qlBLq80=
 github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.3 h1:G5KawTAkyHH6WyKQCdHiW4h3PmAXNJpOgwKg3H7sDRE=
 github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.14.3/go.mod h1:hugKmSFnZB+HgNI1sYGT14BUPZkO6alC/e0AWu+0IAQ=
-github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.43/go.mod h1:auo+PiyLl0n1l8A0e8RIeR8tOzYPfZZH/JNlrJ8igTQ=
 github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.2 h1:AaQsr5vvGR7rmeSWBtTCcw16tT9r51mWijuCQhzLnq8=
 github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.2/go.mod h1:o1IiRn7CWocIFTXJjGKJDOwxv1ibL53NpcvcqGWyRBA=
-github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.37/go.mod h1:Qe+2KtKml+FEsQF/DHmDV+xjtche/hwoF75EG4UlHW8=
 github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.2 h1:UZx8SXZ0YtzRiALzYAWcjb9Y9hZUR7MBKaBQ5ouOjPs=
 github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.2/go.mod h1:ipuRpcSaklmxR6C39G187TpBAO132gUfleTGccUPs8c=
 github.com/aws/aws-sdk-go-v2/internal/ini v1.5.2 h1:5KL4rS1yq5rJ6Q8lrlsFPHCPWwhkMINNiRXHb4YbFyc=
@@ -21,13 +18,12 @@ github.com/aws/aws-sdk-go-v2/service/organizations v1.22.1 h1:h1iKxCVi6OXpLBAPW7
 github.com/aws/aws-sdk-go-v2/service/organizations v1.22.1/go.mod h1:jXOkRBGMbSyDxW2wOSNZ4uzhxuD1t4RJumHHqXRWnr4=
 github.com/aws/aws-sdk-go-v2/service/sso v1.17.1 h1:km+ZNjtLtpXYf42RdaDZnNHm9s7SYAuDGTafy6nd89A=
 github.com/aws/aws-sdk-go-v2/service/sso v1.17.1/go.mod h1:aHBr3pvBSD5MbzOvQtYutyPLLRPbl/y9x86XyJJnUXQ=
-github.com/aws/aws-sdk-go-v2/service/ssoadmin v1.18.4 h1:6cbnU4i4rex8BLdc6A83GDjLym/BLKHnWBcrvXe1rks=
-github.com/aws/aws-sdk-go-v2/service/ssoadmin v1.18.4/go.mod h1:GXyv+j86FC5UlTrF2PQMsj6Cs5kCgb0PvvnNtOoRQRQ=
+github.com/aws/aws-sdk-go-v2/service/ssoadmin v1.20.1 h1:SFUAn+SftvIbr2+0QJ4s0MK/wYZXZSSeKozlZKCy+FA=
+github.com/aws/aws-sdk-go-v2/service/ssoadmin v1.20.1/go.mod h1:xWPDKjX6H4ZuT2qkaWk9xQujEuDHOjM0CyjKkmauDCQ=
 github.com/aws/aws-sdk-go-v2/service/ssooidc v1.19.1 h1:iRFNqZH4a67IqPvK8xxtyQYnyrlsvwmpHOe9r55ggBA=
 github.com/aws/aws-sdk-go-v2/service/ssooidc v1.19.1/go.mod h1:pTy5WM+6sNv2tB24JNKFtn6EvciQ5k40ZJ0pq/Iaxj0=
 github.com/aws/aws-sdk-go-v2/service/sts v1.25.1 h1:txgVXIXWPXyqdiVn92BV6a/rgtpX31HYdsOYj0sVQQQ=
 github.com/aws/aws-sdk-go-v2/service/sts v1.25.1/go.mod h1:VAiJiNaoP1L89STFlEMgmHX1bKixY+FaP+TpRFrmyZ4=
-github.com/aws/smithy-go v1.15.0/go.mod h1:Tg+OJXh4MB2R/uN61Ko2f6hTZwB/ZYGOtib8J3gBHzA=
 github.com/aws/smithy-go v1.16.0 h1:gJZEH/Fqh+RsvlJ1Zt4tVAtV6bKkp3cC+R6FCZMNzik=
 github.com/aws/smithy-go v1.16.0/go.mod h1:NukqUGpCZIILqqiV0NIjeFh24kd/FAa4beRb6nbIUPE=
 github.com/cpuguy83/go-md2man/v2 v2.0.3/go.mod h1:tgQtvFlXSQOSOSIRvRPT7W67SCa46tRHOmNcaadrF8o=
@@ -37,11 +33,8 @@ github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/go-ini/ini v1.67.0 h1:z6ZrTEZqSWOTyH2FlglNbNgARyHG8oLW9gMELqKr06A=
 github.com/go-ini/ini v1.67.0/go.mod h1:ByCAeIL28uOIIG0E3PJtZPDL8WnHpFKFOtgjp+3Ies8=
 github.com/google/go-cmp v0.5.8 h1:e6P7q2lk1O+qJJb4BtCQXlK8vWEO8V1ZeuEdJNOqZyg=
-github.com/google/go-cmp v0.5.8/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
-github.com/jmespath/go-jmespath v0.4.0/go.mod h1:T8mJZnbsbmF+m6zOOFylbeCJqk5+pHWvzYPziyZiYoo=
-github.com/jmespath/go-jmespath/internal/testify v1.5.1/go.mod h1:L3OGu8Wl2/fWfCI6z80xFu9LTZmf1ZRjMHUOPmWr69U=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
@@ -57,7 +50,6 @@ github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO
 github.com/stretchr/testify v1.8.2 h1:+h33VjcLVPDHtOdpUCuF+7gSuG3yGIftsP1YvFihtJ8=
 github.com/stretchr/testify v1.8.2/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
-gopkg.in/yaml.v2 v2.2.8/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
