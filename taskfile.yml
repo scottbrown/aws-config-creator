@@ -1,0 +1,128 @@
+---
+version: 3
+
+vars:
+  bin_name: aws-config-creator
+  app_repo: github.com/scottbrown/{{ .bin_name }}
+  pkg_name: "{{ .app_repo }}/cmd"
+
+  pwd:
+    sh: pwd
+
+  build_dir: "{{ .pwd }}/.build"
+  dist_dir: "{{ .pwd }}/.dist"
+
+tasks:
+  build:
+    desc: "Builds a local artifact"
+    cmds:
+      - go build -o {{ .build_dir }}/{{ .bin_name }} {{ .pkg_name }}
+
+  fmt:
+    desc: "Formats the code"
+    cmds:
+      - go fmt ./...
+
+  test:
+    desc: "Runs unit tests"
+    cmds:
+      - go test ./...
+
+  check:
+    desc: "Runs all security scans"
+    deps: [ sast, vet, vuln]
+
+  sast:
+    desc: "Scans for code vulns"
+    cmds:
+      - gosec ./...
+
+  vet:
+    desc: "Scans for Go issues"
+    cmds:
+      - go vet ./...
+
+  vuln:
+    desc: "Scans for 3rd party lib vulns"
+    cmds:
+      - govulncheck ./...
+
+  clean:
+    cmds:
+      - rm -rf {{ .build_dir }} {{ .dist_dir }}
+
+  release:
+    desc: "Creates release artifacts"
+    deps:
+      - task: build-deps
+        silent: true
+      - task: build-all
+      - task: release-all
+    requires:
+      vars:
+        - VERSION
+
+  build-deps:
+    cmds:
+      - mkdir -p {{ .dist_dir }}
+    internal: true
+
+  build-all:
+    desc: "Builds all artifacts"
+    deps: [ build-linux, build-windows, build-darwin ]
+
+  build-linux:
+    desc: "Builds a linux artifact"
+    for: [ amd64, arm64 ]
+    cmds:
+      - GOOS=$GOOS GOARCH={{ .ITEM }} go build -o {{ .build_dir }}/linux-{{ .ITEM }}/{{ .bin_name }} {{ .app_repo }}/cmd
+    env:
+      GOOS: linux
+
+  build-windows:
+    desc: "Builds a Windows artifact"
+    for: [ amd64, arm64 ]
+    cmds:
+      - GOOS=$GOOS GOARCH={{ .ITEM }} go build -o {{ .build_dir }}/windows-{{ .ITEM }}/{{ .bin_name }}.exe {{ .app_repo }}/cmd
+    env:
+      GOOS: windows
+
+  build-darwin:
+    desc: "Builds a MacOS artifact"
+    for: [ amd64, arm64 ]
+    cmds:
+      - GOOS=darwin GOARCH={{ .ITEM }} go build -o {{ .build_dir }}/darwin-{{ .ITEM }}/{{ .bin_name }} {{ .app_repo }}/cmd
+    env:
+      GOOS: darwin
+
+  release-all:
+    desc: "Creates all releasable artifacts"
+    deps: [ release-linux, release-windows, release-darwin ]
+
+  release-linux:
+    desc: "Creates a linux releasable artifact"
+    for: [ amd64, arm64 ]
+    cmds:
+      - tar cfz {{ .dist_dir }}/{{ .bin_name }}_{{ .VERSION }}_linux_{{ .ITEM }}.tar.gz -C {{ .build_dir }}/linux-{{ .ITEM }} .
+    requires:
+      vars:
+        - VERSION
+
+  release-windows:
+    desc: "Creates a Windows releasable artifact"
+    for: [ amd64, arm64 ]
+    cmds:
+      - tar cfz {{ .dist_dir }}/{{ .bin_name }}_{{ .VERSION }}_windows_{{ .ITEM }}.tar.gz -C {{ .build_dir }}/windows-{{ .ITEM }} .
+    requires:
+      vars:
+        - VERSION
+
+  release-darwin:
+    desc: "Creates a MacOS releasable artifact"
+    for: [ amd64, arm64 ]
+    cmds:
+      - tar cfz {{ .dist_dir }}/{{ .bin_name }}_{{ .VERSION }}_darwin_{{ .ITEM }}.tar.gz -C {{ .build_dir }}/darwin-{{ .ITEM }} .
+    requires:
+      vars:
+        - VERSION
+

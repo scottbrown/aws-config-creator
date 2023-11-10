@@ -50,9 +50,9 @@ By supplying a `--mapping` flag with a comma-delimited list of key=value pairs c
 
 1. Fork the repository.
 1. Make your change.
-1. `make fmt`
-1. `make test`
-1. `make build`
+1. `task fmt`
+1. `task test`
+1. `task build`
 1. Make a Pull Request.
 
 ## Roadmap
