@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.27.10
 	github.com/aws/aws-sdk-go-v2/service/ssoadmin v1.25.11
 	github.com/go-ini/ini v1.67.0
-	github.com/spf13/cobra v1.8.0
+	github.com/spf13/cobra v1.8.1
 )
 
 require (
