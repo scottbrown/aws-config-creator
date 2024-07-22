@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/aws/aws-sdk-go-v2 v1.30.3
 	github.com/aws/aws-sdk-go-v2/config v1.27.27
-	github.com/aws/aws-sdk-go-v2/service/organizations v1.30.0
+	github.com/aws/aws-sdk-go-v2/service/organizations v1.30.2
 	github.com/aws/aws-sdk-go-v2/service/ssoadmin v1.27.3
 	github.com/go-ini/ini v1.67.0
 	github.com/spf13/cobra v1.8.1
