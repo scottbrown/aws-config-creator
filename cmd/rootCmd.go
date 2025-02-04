@@ -129,11 +129,11 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&ssoSession, "sso-session", "s", "", "Nickname to give the SSO Session (e.g. org name)")
-	rootCmd.PersistentFlags().StringVarP(&profile, "profile", "p", "", "Profile")
-	rootCmd.PersistentFlags().StringVarP(&ssoRegion, "sso-region", "r", "", "AWS region where AWS SSO resides")
-	rootCmd.PersistentFlags().StringVarP(&mapping, "mapping", "m", "", "Comma-delimited Account Nickname Mapping (id=nickname)")
-	rootCmd.PersistentFlags().StringVarP(&filename, "output", "o", DEFAULT_FILENAME, "Where the AWS config file will be written")
-	rootCmd.PersistentFlags().BoolVar(&stdout, "stdout", false, "Specify this flag to write the config file to stdout instead of a file")
-	rootCmd.PersistentFlags().StringVar(&ssoFriendlyName, "sso-friendly-name", "", "Use this instead of the identity store ID for the start URL")
+	rootCmd.PersistentFlags().StringVarP(&ssoSession, FlagSSOSession, "s", "", "Nickname to give the SSO Session (e.g. org name)")
+	rootCmd.PersistentFlags().StringVarP(&profile, FlagProfile, "p", "", "Profile")
+	rootCmd.PersistentFlags().StringVarP(&ssoRegion, FlagSSORegion, "r", "", "AWS region where AWS SSO resides")
+	rootCmd.PersistentFlags().StringVarP(&mapping, FlagMapping, "m", "", "Comma-delimited Account Nickname Mapping (id=nickname)")
+	rootCmd.PersistentFlags().StringVarP(&filename, FlagOutput, "o", DEFAULT_FILENAME, "Where the AWS config file will be written")
+	rootCmd.PersistentFlags().BoolVar(&stdout, FlagStdout, false, "Specify this flag to write the config file to stdout instead of a file")
+	rootCmd.PersistentFlags().StringVar(&ssoFriendlyName, FlagSSOFriendlyName, "", "Use this instead of the identity store ID for the start URL")
 }
