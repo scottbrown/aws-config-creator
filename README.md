@@ -1,4 +1,6 @@
-# aws-config-creator
+![setlist](icon.png)
+
+# SetList (originally aws-config-creator)
 
 Command line tool to automatically generate a `.aws/config` file based on AWS SSO permission sets in your org.
 
@@ -24,9 +26,9 @@ happening.
 ### Create a basic `.aws/config` file
 
 ```bash
-$ aws-config-creator --sso-session acme \
-                     --sso-region us-east-1 \
-                     --profile admin
+$ setlist --sso-session acme \
+          --sso-region us-east-1 \
+          --profile admin
 Writing 43 entries to aws.config...done.
 ```
 
@@ -37,10 +39,10 @@ For example: `[profile 0123456789012-AdministratorAccess]`
 ### Create a friendly `.aws/config` file
 
 ```bash
-$ aws-config-creator --sso-session acme \
-                     --sso-region us-east-1 \
-                     --profile admin \
-                     --mapping "0123456789012=acme,98765432101=acmelite"
+$ setlist --sso-session acme \
+          --sso-region us-east-1 \
+          --profile admin \
+          --mapping "0123456789012=acme,98765432101=acmelite"
 Writing 86 entries to aws.config...done.
 ```
 

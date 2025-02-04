@@ -1,4 +1,4 @@
-package awsconfigcreator
+package setlist
 
 type Profile struct {
 	Name            string

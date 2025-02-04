@@ -1,4 +1,4 @@
-package awsconfigcreator
+package setlist
 
 import (
 	"testing"

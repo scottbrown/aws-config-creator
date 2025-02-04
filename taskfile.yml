@@ -2,7 +2,7 @@
 version: 3
 
 vars:
-  bin_name: aws-config-creator
+  bin_name: setlist
   app_repo: github.com/scottbrown/{{ .bin_name }}
   pkg_name: "{{ .app_repo }}/cmd"
 

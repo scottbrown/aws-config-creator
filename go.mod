@@ -1,4 +1,4 @@
-module github.com/scottbrown/aws-config-creator
+module github.com/scottbrown/setlist
 
 go 1.21
 

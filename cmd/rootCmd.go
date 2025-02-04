@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	core "github.com/scottbrown/aws-config-creator"
+	core "github.com/scottbrown/setlist"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -122,7 +122,7 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "aws-config-creator",
+	Use:   "setlist",
 	Short: "Creates an AWS config file from AWS SSO configuration",
 	Long:  "Parses an AWS organizations permission set structure to build a complete .aws/config file with all permission sets provisioned across all AWS member accounts",
 	RunE:  handleRoot,
