@@ -51,6 +51,8 @@ func (f *FileBuilder) Build() (*ini.File, error) {
 func (f *FileBuilder) addDefaultSection(file *ini.File) error {
 	section := file.Section("default")
 
+	section.Comment = fmt.Sprintf("# Generated on: %s", generateTimestamp())
+
 	if _, err := section.NewKey(SSOSessionAttrKey, f.Config.SessionName); err != nil {
 		return err
 	}
