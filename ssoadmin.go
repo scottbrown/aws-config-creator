@@ -28,22 +28,37 @@ func SsoInstance(ctx context.Context, client *ssoadmin.Client) (types.InstanceMe
 func PermissionSets(ctx context.Context, client *ssoadmin.Client, instanceArn string, accountId string) ([]types.PermissionSet, error) {
 	permissionSets := []types.PermissionSet{}
 
-	params := &ssoadmin.ListPermissionSetsProvisionedToAccountInput{
-		InstanceArn: aws.String(instanceArn),
-		AccountId:   aws.String(accountId),
-	}
-	resp, err := client.ListPermissionSetsProvisionedToAccount(ctx, params)
+	var permissionSetArns []string
+	var token *string
+	for {
+		params := &ssoadmin.ListPermissionSetsProvisionedToAccountInput{
+			InstanceArn: aws.String(instanceArn),
+			AccountId:   aws.String(accountId),
+			NextToken:   token,
+		}
+		resp, err := client.ListPermissionSetsProvisionedToAccount(ctx, params)
 
-	if err != nil {
-		return permissionSets, err
+		if err != nil {
+			return permissionSets, err
+		}
+
+		for _, i := range resp.PermissionSets {
+			permissionSetArns = append(permissionSetArns, i)
+		}
+
+		if resp.NextToken == nil {
+			break
+		}
+
+		token = resp.NextToken
 	}
 
 	// loop through permissions sets
-	for _, permissionSetArn := range resp.PermissionSets {
+	for _, arn := range permissionSetArns {
 		// get permission set name
 		params := &ssoadmin.DescribePermissionSetInput{
 			InstanceArn:      aws.String(instanceArn),
-			PermissionSetArn: aws.String(permissionSetArn),
+			PermissionSetArn: aws.String(arn),
 		}
 		resp, err := client.DescribePermissionSet(ctx, params)
 		if err != nil {
