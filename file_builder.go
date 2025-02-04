@@ -51,7 +51,7 @@ func (f *FileBuilder) Build() (*ini.File, error) {
 func (f *FileBuilder) addDefaultSection(file *ini.File) error {
 	section := file.Section("default")
 
-	if _, err := section.NewKey("sso_session", f.Config.SessionName); err != nil {
+	if _, err := section.NewKey(SSOSessionAttrKey, f.Config.SessionName); err != nil {
 		return err
 	}
 
@@ -59,7 +59,7 @@ func (f *FileBuilder) addDefaultSection(file *ini.File) error {
 }
 
 func (f *FileBuilder) addSSOSection(file *ini.File) error {
-	section := file.Section(strings.Join([]string{SSOSessionKey, f.Config.SessionName}, " "))
+	section := file.Section(strings.Join([]string{SSOSessionSectionKey, f.Config.SessionName}, " "))
 
 	if _, err := section.NewKey(SSOStartUrlKey, f.Config.StartURL()); err != nil {
 		return err
@@ -81,7 +81,7 @@ func (f *FileBuilder) addProfileSection(p Profile, file *ini.File) error {
 
 	section.Comment = fmt.Sprintf("# %s. Session Duration: %s", p.Description, p.SessionDuration)
 
-	if _, err := section.NewKey(SSOSessionKey, p.SessionName); err != nil {
+	if _, err := section.NewKey(SSOSessionAttrKey, p.SessionName); err != nil {
 		return err
 	}
 

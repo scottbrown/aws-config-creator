@@ -1,6 +1,8 @@
 package awsconfigcreator
 
-const SSOSessionKey string = "sso-session"
+const SSOSessionSectionKey string = "sso-session"
+
+const SSOSessionAttrKey string = "sso_session"
 
 const SSOStartUrlKey string = "sso_start_url"
 
