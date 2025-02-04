@@ -2,21 +2,17 @@ package main
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
-	"strings"
+
+	core "github.com/scottbrown/aws-config-creator"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/organizations"
-	"github.com/aws/aws-sdk-go-v2/service/organizations/types"
 	"github.com/aws/aws-sdk-go-v2/service/ssoadmin"
-	"github.com/go-ini/ini"
 	"github.com/spf13/cobra"
 )
-
-const DEFAULT_FILENAME string = "aws.config"
 
 var (
 	ssoSession      string
@@ -28,30 +24,13 @@ var (
 	ssoFriendlyName string
 )
 
-func parseNicknameMapping(mapping string) map[string]string {
-	nicknameMapping := make(map[string]string)
-
-	if len(mapping) == 0 {
-		return nicknameMapping
-	}
-
-	tokens := strings.Split(mapping, ",")
-	for _, token := range tokens {
-		parts := strings.Split(token, "=")
-
-		nicknameMapping[parts[0]] = parts[1]
-	}
-
-	return nicknameMapping
-}
-
 func handleRoot(cmd *cobra.Command, args []string) error {
 	ctx := context.TODO()
 
-	if err := cmd.MarkFlagRequired("sso-session"); err != nil {
+	if err := cmd.MarkFlagRequired(FlagSSOSession); err != nil {
 		return err
 	}
-	if err := cmd.MarkFlagRequired("sso-region"); err != nil {
+	if err := cmd.MarkFlagRequired(FlagSSORegion); err != nil {
 		return err
 	}
 
@@ -75,114 +54,57 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	nicknameMapping := parseNicknameMapping(mapping)
-
-	// get the SSO instance ARN (there's only one allowed)
 	ssoClient := ssoadmin.NewFromConfig(cfg)
-
-	resp, err := ssoClient.ListInstances(ctx, nil)
-	if err != nil {
-		return err
-	}
-
-	if len(resp.Instances) == 0 {
-		return errors.New("SSO is not enabled.  No SSO instances exist.")
-	}
-
-	instanceArn := resp.Instances[0].InstanceArn
-
-	// list all accounts
-	var accounts []types.Account
 	orgClient := organizations.NewFromConfig(cfg)
 
-	var token *string
-	for {
-		orgOutput, err := orgClient.ListAccounts(ctx, &organizations.ListAccountsInput{NextToken: token})
-		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-
-		for _, v := range orgOutput.Accounts {
-			accounts = append(accounts, v)
-		}
-
-		if orgOutput.NextToken == nil {
-			break
-		}
-
-		token = orgOutput.NextToken
+	instance, err := core.SsoInstance(ctx, ssoClient)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 
-	// print out the SSO session configuration to file
-	payload := ini.Empty()
-
-	ssoSection := payload.Section(fmt.Sprintf("sso-session %s", ssoSession))
-
-	if _, err := ssoSection.NewKey("sso_start_url", ssoStartUrl(*resp.Instances[0].IdentityStoreId, ssoFriendlyName)); err != nil {
-		return err
-	}
-	if _, err := ssoSection.NewKey("sso_region", ssoRegion); err != nil {
-		return err
-	}
-	if _, err := ssoSection.NewKey("sso_registration_scopes", "sso:account:access"); err != nil {
-		return err
+	accounts, err := core.ListAccounts(ctx, orgClient)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 
-	// loop through each account
+	configFile := core.ConfigFile{
+		SessionName:     ssoSession,
+		IdentityStoreId: *instance.IdentityStoreId,
+		FriendlyName:    ssoFriendlyName,
+		Region:          ssoRegion,
+		NicknameMapping: core.ParseNicknameMapping(mapping),
+	}
+
+	profiles := []core.Profile{}
 	for _, account := range accounts {
-		// list-permission-sets-provisioned-to-account
-		params := &ssoadmin.ListPermissionSetsProvisionedToAccountInput{
-			InstanceArn: instanceArn,
-			AccountId:   account.Id,
-		}
-		resp, err := ssoClient.ListPermissionSetsProvisionedToAccount(ctx, params)
+		permissionSets, err := core.PermissionSets(ctx, ssoClient, *instance.InstanceArn, *account.Id)
+
 		if err != nil {
 			return err
 		}
 
-		// loop through permissions sets
-		for _, permissionSetArn := range resp.PermissionSets {
-			// get permission set name
-			params := &ssoadmin.DescribePermissionSetInput{
-				InstanceArn:      instanceArn,
-				PermissionSetArn: aws.String(permissionSetArn),
-			}
-			resp, err := ssoClient.DescribePermissionSet(ctx, params)
-			if err != nil {
-				return err
+		for _, p := range permissionSets {
+			profile := core.Profile{
+				Description:     *p.Description,
+				SessionDuration: *p.SessionDuration,
+				SessionName:     ssoSession,
+				AccountId:       *account.Id,
+				RoleName:        *p.Name,
 			}
 
-			// create section for AccountId-PermissionSet profile
-			section1 := payload.Section(fmt.Sprintf("profile %s-%s", *account.Id, *resp.PermissionSet.Name))
-			section1.Comment = fmt.Sprintf("# %s. Session Duration: %s", *resp.PermissionSet.Description, *resp.PermissionSet.SessionDuration)
-			if _, err := section1.NewKey("sso_session", ssoSession); err != nil {
-				return err
-			}
-			if _, err := section1.NewKey("sso_account_id", *account.Id); err != nil {
-				return err
-			}
-			if _, err := section1.NewKey("sso_role_name", *resp.PermissionSet.Name); err != nil {
-				return err
-			}
-
-			if len(nicknameMapping) == 0 {
-				continue
-			}
-
-			// create section for AccountNickname-PermissionSet profile
-			section2 := payload.Section(fmt.Sprintf("profile %s-%s", nicknameFor(*account.Id, nicknameMapping), *resp.PermissionSet.Name))
-			section2.Comment = fmt.Sprintf("# %s. Session Duration: %s", *resp.PermissionSet.Description, *resp.PermissionSet.SessionDuration)
-			if _, err := section2.NewKey("sso_session", ssoSession); err != nil {
-				return err
-			}
-			if _, err := section2.NewKey("sso_account_id", *account.Id); err != nil {
-				return err
-			}
-			if _, err := section2.NewKey("sso_role_name", *resp.PermissionSet.Name); err != nil {
-				return err
-			}
+			profiles = append(profiles, profile)
 		}
+	}
+
+	configFile.Profiles = profiles
+
+	builder := core.NewFileBuilder(configFile)
+	payload, err := builder.Build()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 
 	if stdout {
@@ -197,26 +119,6 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-}
-
-func nicknameFor(accountId string, nicknameMapping map[string]string) string {
-	v := nicknameMapping[accountId]
-
-	if v == "" {
-		v = fmt.Sprintf("NoNickname-%s", accountId)
-	}
-
-	return v
-}
-
-func ssoStartUrl(identityStoreID, friendlyName string) string {
-	subdomain := identityStoreID
-
-	if friendlyName != "" {
-		subdomain = friendlyName
-	}
-
-	return fmt.Sprintf("https://%s.awsapps.com/start", subdomain)
 }
 
 var rootCmd = &cobra.Command{
