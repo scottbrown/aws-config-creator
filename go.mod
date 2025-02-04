@@ -1,6 +1,8 @@
 module github.com/scottbrown/aws-config-creator
 
-go 1.19
+go 1.21
+
+toolchain go1.23.4
 
 require (
 	github.com/aws/aws-sdk-go-v2 v1.36.0
