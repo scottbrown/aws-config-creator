@@ -126,3 +126,7 @@ tasks:
       vars:
         - VERSION
 
+  sbom:
+    desc: "Generates an SBOM"
+    cmds:
+      - cyclonedx-gomod mod -licenses -json -output {{ .dist_dir }}/bom.json
