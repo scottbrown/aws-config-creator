@@ -1,6 +1,6 @@
 ![setlist](icon.png)
 
-# SetList (originally aws-config-creator)
+# SetList (formerly aws-config-creator)
 
 Command line tool to automatically generate a `.aws/config` file based on AWS SSO permission sets in your org.
 
