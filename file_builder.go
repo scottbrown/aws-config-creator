@@ -7,16 +7,24 @@ import (
 	"github.com/go-ini/ini"
 )
 
+// FileBuilder is responsible for generating an INI file
+// based on the provided configuration.
 type FileBuilder struct {
 	Config ConfigFile
 }
 
+// NewFileBuilder creates a new FileBuilder instance with the
+// given configuration.
 func NewFileBuilder(configFile ConfigFile) FileBuilder {
 	return FileBuilder{
 		Config: configFile,
 	}
 }
 
+// Build generates an INI file based on the configuration.
+// It adds a default section, an SSO section, and profile sections
+// for each configured profile. If a nickname mapping exists,
+// it creates an additional profile section for the nickname.
 func (f *FileBuilder) Build() (*ini.File, error) {
 	payload := ini.Empty()
 
@@ -34,11 +42,12 @@ func (f *FileBuilder) Build() (*ini.File, error) {
 			return payload, err
 		}
 
+		// Check if the profile has an associated nickname
 		if !f.Config.HasNickname(p.AccountId) {
 			continue
 		}
 
-		// create section for AccountNickname-PermissionSet profile
+		// Create section for AccountNickname-PermissionSet profile
 		p.Name = fmt.Sprintf("%s-%s", f.Config.NicknameMapping[p.AccountId], p.RoleName)
 		if err := f.addProfileSection(p, payload); err != nil {
 			return payload, err
@@ -48,9 +57,12 @@ func (f *FileBuilder) Build() (*ini.File, error) {
 	return payload, nil
 }
 
+// addDefaultSection creates the [default] section in the INI file.
+// This section contains the SSO session name and a timestamp comment.
 func (f *FileBuilder) addDefaultSection(file *ini.File) error {
 	section := file.Section("default")
 
+	// Add a comment indicating when the file was generated
 	section.Comment = fmt.Sprintf("# Generated on: %s", generateTimestamp())
 
 	if _, err := section.NewKey(SSOSessionAttrKey, f.Config.SessionName); err != nil {
@@ -60,6 +72,8 @@ func (f *FileBuilder) addDefaultSection(file *ini.File) error {
 	return nil
 }
 
+// addSSOSection creates the SSO session section in the INI file.
+// This section includes the SSO start URL, region, and registration scopes.
 func (f *FileBuilder) addSSOSection(file *ini.File) error {
 	section := file.Section(strings.Join([]string{SSOSessionSectionKey, f.Config.SessionName}, " "))
 
@@ -78,9 +92,13 @@ func (f *FileBuilder) addSSOSection(file *ini.File) error {
 	return nil
 }
 
+// addProfileSection creates a profile section in the INI file for a given
+// profile. It includes metadata such as session name, account ID, and
+// role name.
 func (f *FileBuilder) addProfileSection(p Profile, file *ini.File) error {
 	section := file.Section(fmt.Sprintf("profile %s", p.Name))
 
+	// Add a comment describing the profile and session duration
 	section.Comment = fmt.Sprintf("# %s. Session Duration: %s", p.Description, p.SessionDuration)
 
 	if _, err := section.NewKey(SSOSessionAttrKey, p.SessionName); err != nil {
