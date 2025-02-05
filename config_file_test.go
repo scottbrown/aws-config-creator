@@ -62,3 +62,31 @@ func TestHasFriendlyName(t *testing.T) {
 		})
 	}
 }
+
+func TestHasNickname(t *testing.T) {
+  mapping := make(map[string]string)
+  mapping["123"] = "abc"
+
+  tests := []struct {
+    name string
+    accountId string
+    expected bool
+  }{
+    {"mapping exists", "123", true},
+    {"mapping missing", "234", false},
+  }
+
+  for _, tt := range tests {
+    t.Run(tt.name, func(t *testing.T) {
+      c := ConfigFile{
+        NicknameMapping: mapping,
+      }
+
+      got := c.HasNickname(tt.accountId)
+
+      if got != tt.expected {
+        t.Fatalf("Expected %v but got %v", tt.expected, got)
+      }
+    })
+  }
+}
