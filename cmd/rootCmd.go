@@ -27,11 +27,14 @@ var (
 func handleRoot(cmd *cobra.Command, args []string) error {
 	ctx := context.TODO()
 
-	if err := cmd.MarkFlagRequired(FlagSSOSession); err != nil {
-		return err
-	}
-	if err := cmd.MarkFlagRequired(FlagSSORegion); err != nil {
-		return err
+	cmd.MarkFlagRequired(FlagSSOSession)
+	cmd.MarkFlagRequired(FlagSSORegion)
+
+	requiredFlags := []string{FlagSSOSession, FlagSSORegion}
+	for _, flag := range requiredFlags {
+		if !cmd.Flags().Changed(flag) {
+			return fmt.Errorf("required flag --%s not set", flag)
+		}
 	}
 
 	var cfg aws.Config
@@ -42,15 +45,13 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 		// create a config with the specified profile
 		cfg, err = config.LoadDefaultConfig(ctx, config.WithRegion(ssoRegion), config.WithSharedConfigProfile(profile))
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
+			return err
 		}
 	} else {
 		// create a config with static credentials
 		cfg, err = config.LoadDefaultConfig(ctx, config.WithRegion(ssoRegion))
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
+			return err
 		}
 	}
 
@@ -59,14 +60,12 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 
 	instance, err := core.SsoInstance(ctx, ssoClient)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return err
 	}
 
 	accounts, err := core.ListAccounts(ctx, orgClient)
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return err
 	}
 
 	configFile := core.ConfigFile{
@@ -103,8 +102,7 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 	builder := core.NewFileBuilder(configFile)
 	payload, err := builder.Build()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return err
 	}
 
 	if stdout {
