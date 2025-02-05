@@ -21,7 +21,7 @@ jobs:
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Compile all versions
-        run: task VERSION=${GITHUB_REF_NAME}
+        run: task release VERSION=${GITHUB_REF_NAME}
       - name: Generate SBOM
         uses: CycloneDX/gh-gomod-generate-sbom@v2
         with:
