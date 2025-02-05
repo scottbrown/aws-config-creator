@@ -14,28 +14,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	ssoSession      string
-	profile         string
-	ssoRegion       string
-	mapping         string
-	filename        string
-	stdout          bool
-	ssoFriendlyName string
-)
+var rootCmd = &cobra.Command{
+	Use:     AppName,
+	Short:   AppDescShort,
+	Long:    AppDescLong,
+	RunE:    handleRoot,
+	Version: core.VERSION,
+}
 
 func handleRoot(cmd *cobra.Command, args []string) error {
 	ctx := context.TODO()
-
-	cmd.MarkFlagRequired(FlagSSOSession)
-	cmd.MarkFlagRequired(FlagSSORegion)
-
-	requiredFlags := []string{FlagSSOSession, FlagSSORegion}
-	for _, flag := range requiredFlags {
-		if !cmd.Flags().Changed(flag) {
-			return fmt.Errorf("required flag --%s not set", flag)
-		}
-	}
 
 	var cfg aws.Config
 	var err error
@@ -117,21 +105,4 @@ func handleRoot(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-}
-
-var rootCmd = &cobra.Command{
-	Use:   "setlist",
-	Short: "Creates an AWS config file from AWS SSO configuration",
-	Long:  "Parses an AWS organizations permission set structure to build a complete .aws/config file with all permission sets provisioned across all AWS member accounts",
-	RunE:  handleRoot,
-}
-
-func init() {
-	rootCmd.PersistentFlags().StringVarP(&ssoSession, FlagSSOSession, "s", "", "Nickname to give the SSO Session (e.g. org name)")
-	rootCmd.PersistentFlags().StringVarP(&profile, FlagProfile, "p", "", "Profile")
-	rootCmd.PersistentFlags().StringVarP(&ssoRegion, FlagSSORegion, "r", "", "AWS region where AWS SSO resides")
-	rootCmd.PersistentFlags().StringVarP(&mapping, FlagMapping, "m", "", "Comma-delimited Account Nickname Mapping (id=nickname)")
-	rootCmd.PersistentFlags().StringVarP(&filename, FlagOutput, "o", DEFAULT_FILENAME, "Where the AWS config file will be written")
-	rootCmd.PersistentFlags().BoolVar(&stdout, FlagStdout, false, "Specify this flag to write the config file to stdout instead of a file")
-	rootCmd.PersistentFlags().StringVar(&ssoFriendlyName, FlagSSOFriendlyName, "", "Use this instead of the identity store ID for the start URL")
 }
