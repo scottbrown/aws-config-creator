@@ -97,17 +97,3 @@ func (f *FileBuilder) addProfileSection(p Profile, file *ini.File) error {
 
 	return nil
 }
-
-func (f *FileBuilder) ssoStartUrl() string {
-	subdomain := f.Config.IdentityStoreId
-
-	if f.hasFriendlyName() {
-		subdomain = f.Config.FriendlyName
-	}
-
-	return fmt.Sprintf("https://%s.awsapps.com/start", subdomain)
-}
-
-func (f *FileBuilder) hasFriendlyName() bool {
-	return f.Config.FriendlyName != ""
-}
