@@ -57,6 +57,18 @@ By supplying a `--mapping` flag with a comma-delimited list of key=value pairs c
 1. `task build`
 1. Make a Pull Request.
 
+## Releases
+
+Each release comes with a software bill of materials (SBOM).  It is
+generated using [CycloneDX-GoMod](https://github.com/CycloneDX/cyclonedx-gomod) using the following command:
+
+```bash
+cyclonedx-gomod mod -licenses -json -output bom.json
+```
+
+Releases are typically automated via Github Actions whenever a new tag is
+pushed to the default branch.
+
 ## Roadmap
 
 - Create a Lambda function artifact that can be run on a schedule, outputting the latest `.aws/config` to an S3 bucket so that it is always available, especially to those users without the permissions to run this tool.
