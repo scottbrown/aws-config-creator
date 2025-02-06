@@ -9,7 +9,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ssoadmin/types"
 )
 
-// get the SSO instance ARN (there's only one allowed)
+// SsoInstance retrieves the SSO instance metadata.
+// AWS SSO allows only a single instance per organization.
 func SsoInstance(ctx context.Context, client *ssoadmin.Client) (types.InstanceMetadata, error) {
 	resp, err := client.ListInstances(ctx, nil)
 	if err != nil {
@@ -25,6 +26,8 @@ func SsoInstance(ctx context.Context, client *ssoadmin.Client) (types.InstanceMe
 	return instance, nil
 }
 
+// PermissionSets retrieves the list of permission sets provisioned to an
+// account.
 func PermissionSets(ctx context.Context, client *ssoadmin.Client, instanceArn string, accountId string) ([]types.PermissionSet, error) {
 	permissionSets := []types.PermissionSet{}
 
@@ -53,9 +56,8 @@ func PermissionSets(ctx context.Context, client *ssoadmin.Client, instanceArn st
 		token = resp.NextToken
 	}
 
-	// loop through permissions sets
+	// Retrieve detailed information for each permission set.
 	for _, arn := range permissionSetArns {
-		// get permission set name
 		params := &ssoadmin.DescribePermissionSetInput{
 			InstanceArn:      aws.String(instanceArn),
 			PermissionSetArn: aws.String(arn),

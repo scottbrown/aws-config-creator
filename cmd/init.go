@@ -1,5 +1,6 @@
 package main
 
+// init initializes command-line flags for the root command.
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&ssoSession, FlagSSOSession, "s", "", "Nickname to give the SSO Session (e.g. org name) (required)")
 	rootCmd.PersistentFlags().StringVarP(&profile, FlagProfile, "p", "", "Profile")

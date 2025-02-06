@@ -4,6 +4,8 @@ import (
 	"strings"
 )
 
+// ParseNicknameMapping parses a nickname mapping string into a map.
+// The expected format is "accountID1=nickname1,accountID2=nickname2".
 func ParseNicknameMapping(mapping string) map[string]string {
 	nicknameMapping := make(map[string]string)
 

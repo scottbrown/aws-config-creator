@@ -7,6 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/organizations/types"
 )
 
+// ListAccounts retrieves all accounts within an AWS Organization using
+// the provided Organizations client.
 func ListAccounts(ctx context.Context, client *organizations.Client) ([]types.Account, error) {
 	var accounts []types.Account
 

@@ -1,25 +1,27 @@
 package main
 
+// AppName represents the application name.
 const AppName string = "setlist"
 
+// AppDescShort provides a short description of the application.
 const AppDescShort string = "Creates an AWS config file from AWS SSO configuration"
 
+// AppDescLong provides a detailed description of the application's
+// functionality.
 const AppDescLong string = `
 Parses an AWS organizations permission set structure to build a complete .aws/config file with all permission sets provisioned across all AWS member accounts
 `
 
-const FlagSSOSession string = "sso-session"
+// Various flag constants for command-line options.
+const (
+	FlagSSOSession      string = "sso-session"
+	FlagSSORegion       string = "sso-region"
+	FlagProfile         string = "profile"
+	FlagMapping         string = "mapping"
+	FlagOutput          string = "output"
+	FlagStdout          string = "stdout"
+	FlagSSOFriendlyName string = "sso-friendly-name"
+)
 
-const FlagSSORegion string = "sso-region"
-
-const FlagProfile string = "profile"
-
-const FlagMapping string = "mapping"
-
-const FlagOutput string = "output"
-
-const FlagStdout string = "stdout"
-
-const FlagSSOFriendlyName string = "sso-friendly-name"
-
+// Default output filename if no filename is specified
 const DEFAULT_FILENAME string = "aws.config"

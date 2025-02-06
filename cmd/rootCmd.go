@@ -22,6 +22,7 @@ var rootCmd = &cobra.Command{
 	Version: core.VERSION,
 }
 
+// handleRoot executes the main logic of the command-line application.
 func handleRoot(cmd *cobra.Command, args []string) error {
 	ctx := context.TODO()
 

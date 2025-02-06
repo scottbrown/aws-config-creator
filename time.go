@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+// generateTimestamp returns the current UTC timestamp formatted for logs.
 func generateTimestamp() string {
 	now := time.Now().UTC()
 
